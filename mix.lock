@@ -1,0 +1,4 @@
+%{"ex_sharp": {:git, "https://github.com/sschneider1207/ex_sharp.git", "b2e8f43c778e52f9ab9af2d4668991add279abe1", []},
+  "exprotobuf": {:hex, :exprotobuf, "1.0.0"},
+  "gpb": {:hex, :gpb, "3.18.10"},
+  "porcelain": {:hex, :porcelain, "2.0.1"}}
