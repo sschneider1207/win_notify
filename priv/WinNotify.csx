@@ -29,12 +29,22 @@ public static class WinNotify
   [ExSharpFunction("set_text", 2)]
   public static ElixirTerm SetText(ElixirTerm[] argv, int argc)
   {
-    int hashCode = ElixirTerm.GetInt(argv[0]);
+    var hashCode = ElixirTerm.GetInt(argv[0]);
+    if(!hashCode.HasValue) 
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Hash code must be an integer")
+      });
+    }
 
     Icon icon;
-    if (!Icons.TryGetValue(hashCode, out icon))
+    if (!Icons.TryGetValue(hashCode.Value, out icon))
     {
-      return ElixirTerm.MakeAtom("error");
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Icon not found")
+      });
     }
 
     icon.NotifyIcon.Text = ElixirTerm.GetUTF8String(argv[1]);
@@ -44,12 +54,22 @@ public static class WinNotify
   [ExSharpFunction("set_icon", 2)]
   public static ElixirTerm SetIcon(ElixirTerm[] argv, int argc)
   {
-    int hashCode = ElixirTerm.GetInt(argv[0]);
-
-    Icon icon;
-    if (!Icons.TryGetValue(hashCode, out icon))
+    var hashCode = ElixirTerm.GetInt(argv[0]);
+    if(!hashCode.HasValue) 
     {
-      return ElixirTerm.MakeAtom("error");
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Hash code must be an integer")
+      });
+    }
+    
+    Icon icon;
+    if (!Icons.TryGetValue(hashCode.Value, out icon))
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Icon not found")
+      });
     }
 
     try
@@ -60,46 +80,164 @@ public static class WinNotify
     }
     catch (Exception e)
     {
-      return ElixirTerm.MakeAtom("error");
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String(e.Message)
+      });
     }
   }
   
-  [ExSharpFunction("destory_icon", 1)]
+  [ExSharpFunction("toggle_visibility", 1)]
+  public static ElixirTerm ToggleVisibility(ElixirTerm[] argv, int argc)
+  {
+    var hashCode = ElixirTerm.GetInt(argv[0]);
+    if(!hashCode.HasValue) 
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Hash code must be an integer")
+      });
+    }
+    
+    Icon icon;
+    if (!Icons.TryGetValue(hashCode.Value, out icon))
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Icon not found")
+      });
+    }
+    
+    icon.NotifyIcon.Visible = !icon.NotifyIcon.Visible;
+    return ElixirTerm.MakeAtom("ok");
+  }
+  
+  [ExSharpFunction("show_balloon_tip", 4)]
+  public static ElixirTerm ShowBalloonTip(ElixirTerm[] argv, int argc)
+  {
+    var hashCode = ElixirTerm.GetInt(argv[0]);
+    if(!hashCode.HasValue) 
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Hash code must be an integer")
+      });
+    }
+    
+    Icon icon;
+    if (!Icons.TryGetValue(hashCode.Value, out icon))
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Icon not found")
+      });
+    }
+    
+    var title = ElixirTerm.GetUTF8String(argv[1]);
+    if(string.IsNullOrWhiteSpace(title)) {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Title must be a byte string")
+      });      
+    }
+    
+    var text = ElixirTerm.GetUTF8String(argv[2]);
+    if(string.IsNullOrWhiteSpace(title)) {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Text must be a byte string")
+      });      
+    }
+    
+    var toolTipIconAtom = ElixirTerm.GetAtom(argv[3]);
+    ToolTipIcon toolTipIcon;
+    switch(toolTipIconAtom) 
+    {
+      case "error":
+        toolTipIcon = ToolTipIcon.Error;
+        break;
+      case "info":
+        toolTipIcon = ToolTipIcon.Info;
+        break;
+      case "none":
+        toolTipIcon = ToolTipIcon.None;
+        break;
+      case "warning":
+        toolTipIcon = ToolTipIcon.Warning;
+        break;
+      default:
+        return ElixirTerm.MakeTuple(new ElixirTerm[]{
+          ElixirTerm.MakeAtom("error"),
+          ElixirTerm.MakeUTF8String("Unknown tool tip icon type")
+        }); 
+    }
+    
+    icon.NotifyIcon.ShowBalloonTip(0, title, text, toolTipIcon);
+    return ElixirTerm.MakeAtom("ok");
+  }
+  
+  [ExSharpFunction("destroy_icon", 1)]
   public static ElixirTerm DestoryIcon(ElixirTerm[] argv, int argc)
   {
-    int hashCode = ElixirTerm.GetInt(argv[0]);
-
-    Icon icon;
-    if (!Icons.TryGetValue(hashCode, out icon))
+    var hashCode = ElixirTerm.GetInt(argv[0]);
+    if(!hashCode.HasValue) 
     {
-      return ElixirTerm.MakeAtom("error");
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Hash code must be an integer")
+      });
+    }
+    
+    Icon icon;
+    if (!Icons.TryGetValue(hashCode.Value, out icon))
+    {
+      return ElixirTerm.MakeTuple(new ElixirTerm[]{
+        ElixirTerm.MakeAtom("error"),
+        ElixirTerm.MakeUTF8String("Icon not found")
+      });
     }
 
     icon.Dispose();
-    Icons.Remove(hashCode);
+    Icons.Remove(hashCode.Value);
     return ElixirTerm.MakeAtom("ok");
   }
+  
+  [ExSharpFunction("wipe_all_icons", 0)]
+  public static void WipeAllIcons(ElixirTerm[] argv, int argc) 
+  {
+    //foreach (var kvp in Icons)
+    //{
+    //  kvp.Value.Dispose();
+    //}
+    Container.Dispose();
+    Icons = new Dictionary<int, Icon>();
+    return; 
+  }
+  
+  [ExSharpFunction("icon_count", 0)]
+  public static ElixirTerm IconCount(ElixirTerm[] argv, int argc)
+  => ElixirTerm.MakeInt(Icons.Count());
   
   class Icon : IDisposable
   {
     public NotifyIcon NotifyIcon { get; }
     public ContextMenu ContextMenu { get; }
     public List<MenuItem> MenuItems { get; }
-    public Guid Guid { get; }
+    private readonly Guid _guid;
 
     public Icon()
     {
       NotifyIcon = new NotifyIcon(WinNotify.Container);
       ContextMenu = new ContextMenu();
       MenuItems = new List<MenuItem>();
-      Guid = Guid.NewGuid();
+      _guid = Guid.NewGuid();
 
       NotifyIcon.ContextMenu = ContextMenu;
       NotifyIcon.Visible = true;
 
     }
 
-    public override int GetHashCode() => Guid.GetHashCode();
+    public override int GetHashCode() => _guid.GetHashCode();
     public override bool Equals(object obj)
     {
       if (obj == null)
@@ -112,7 +250,7 @@ public static class WinNotify
         return false;
       }
       var icon = (Icon)obj;
-      return Guid.Equals(icon.Guid);
+      return _guid.Equals(icon._guid);
     }
 
     public void Dispose() => NotifyIcon.Dispose();
