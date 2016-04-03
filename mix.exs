@@ -13,11 +13,12 @@ defmodule WinNotify.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :ex_sharp]]
+    [applications: [:logger, :ex_sharp],
+     mod: {WinNotify.Application, []}]
   end
   
   defp deps do
-    [{:ex_sharp, "~> 0.0.2"},
+    [{:ex_sharp, "~> 0.0.3"},
      {:ex_doc, "~> 0.11.4", only: [:dev]},
      {:earmark, "~> 0.2.1", only: [:dev]} ]
   end
