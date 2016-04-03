@@ -205,10 +205,6 @@ public static class WinNotify
   [ExSharpFunction("wipe_all_icons", 0)]
   public static void WipeAllIcons(ElixirTerm[] argv, int argc) 
   {
-    //foreach (var kvp in Icons)
-    //{
-    //  kvp.Value.Dispose();
-    //}
     Container.Dispose();
     Icons = new Dictionary<int, Icon>();
     return; 
@@ -217,6 +213,16 @@ public static class WinNotify
   [ExSharpFunction("icon_count", 0)]
   public static ElixirTerm IconCount(ElixirTerm[] argv, int argc)
   => ElixirTerm.MakeInt(Icons.Count());
+  
+  [ExSharpFunction("list_icons", 0)]
+  public static ElixirTerm ListIcons(ElixirTerm[] argv, int argc) 
+  {
+    var items = Icons.Keys.Select(ElixirTerm.MakeInt)
+      .Concat(new ElixirTerm[]{ ElixirTerm.MakeEmptyList() })
+      .ToArray();
+    
+    return ElixirTerm.MakeList(items);
+  }
   
   class Icon : IDisposable
   {
