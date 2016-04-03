@@ -15,6 +15,6 @@ defmodule WinNotify.Mixfile do
   end
   
   defp deps do
-    [{:ex_sharp, "~> 0.0.1"}]
+    [{:ex_sharp, "~> 0.0.2"}]
   end
 end

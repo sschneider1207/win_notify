@@ -1,4 +1,4 @@
-%{"ex_sharp": {:hex, :ex_sharp, "0.0.1"},
+%{"ex_sharp": {:hex, :ex_sharp, "0.0.2"},
   "exprotobuf": {:hex, :exprotobuf, "1.0.0"},
   "gpb": {:hex, :gpb, "3.18.10"},
   "porcelain": {:hex, :porcelain, "2.0.1"}}
