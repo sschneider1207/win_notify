@@ -1,6 +1,6 @@
 %{"earmark": {:hex, :earmark, "0.2.1"},
   "ex_doc": {:hex, :ex_doc, "0.11.4"},
-  "ex_sharp": {:hex, :ex_sharp, "0.0.3"},
+  "ex_sharp": {:hex, :ex_sharp, "0.0.5"},
   "exprotobuf": {:hex, :exprotobuf, "1.0.0"},
   "gpb": {:hex, :gpb, "3.18.10"},
   "porcelain": {:hex, :porcelain, "2.0.1"}}

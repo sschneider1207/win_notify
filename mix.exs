@@ -3,7 +3,7 @@ defmodule WinNotify.Mixfile do
 
   def project do
     [app: :win_notify,
-     version: "0.0.2",
+     version: "0.0.3",
      elixir: "~> 1.2",
      description: description,
      build_embedded: Mix.env == :prod,
@@ -18,7 +18,7 @@ defmodule WinNotify.Mixfile do
   end
   
   defp deps do
-    [{:ex_sharp, "~> 0.0.3"},
+    [{:ex_sharp, "~> 0.0.5"},
      {:ex_doc, "~> 0.11.4", only: [:dev]},
      {:earmark, "~> 0.2.1", only: [:dev]} ]
   end
