@@ -1,6 +1,8 @@
 defmodule WinNotify do
   @levels ~w(info warning error)a
   
+  @type notify_level :: :info | :warning | :error
+  
   @doc """
   Defines a notification icon process.
   
@@ -11,24 +13,6 @@ defmodule WinNotify do
         
         notify_icon "Foo", "/path/to/icon.ico"
       end
-      
-      iex> Foo.start_link
-      iex> Foo.info("Info Event", "From Elixir!")
-      iex> :ok
-      
-  Alternately, shortcuts can be defined for commonly used alerts:
-    
-      defmodule Foo do
-        import WinNotify
-        
-        notify_icon "Foo", "/path/to/icon.ico" do
-          defalert :bar, :warning, "Unexpected Result", "Got: ~f; Expected ~f;"
-        end
-      end
-      
-      iex> Foo.start_link
-      iex> Foo.bar [5.1, 2.4] # (warning alert with text "Got: 5.1; Expected 2.4;")
-      iex> :ok
   
   ## Defined Functions
   
@@ -41,6 +25,28 @@ defmodule WinNotify do
   defmacro notify_icon(text, icon) do 
     add_notify_icon text, icon, do: [] 
   end
+  
+  @doc """
+  Defines a notification icon process.
+  
+  ## Example
+  
+      defmodule Foo do
+        import WinNotify
+        
+        notify_icon "Foo", "/path/to/icon.ico" do
+          defalert :bar, :warning, "Unexpected Result", "Got: ~f; Expected ~f;"
+        end
+      end
+      
+      iex> Foo.start_link
+      iex> Foo.bar [5.1, 2.4] # (warning alert with text "Got: 5.1; Expected 2.4;")
+      iex> :ok
+   
+  ## Defined Functions
+   
+  See `notify_icon/2`
+  """
   defmacro notify_icon(text, icon, do: block) do
     add_notify_icon text, icon, do: block
   end
@@ -87,6 +93,21 @@ defmodule WinNotify do
     end
   end
   
+  @doc """
+  Creates a helper function for commonly used alerts when used in the `do` block of `notify_icon/3`.
+  
+  ## Example
+  
+      defmodule Foo do
+        import WinNotify
+        
+        notify_icon "Foo", "/path/to/icon.ico" do
+          defalert :bar, :warning, "Unexpected Result", "Got: ~f; Expected ~f;"
+        end
+      end
+      
+  Defines `Foo.bar/1` which takes a list of terms to format the message with.
+  """
   defmacro defalert(name, level, title, format) when level in @levels do
     quote do
       def unquote(name)(args) when is_list(args) do

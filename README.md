@@ -23,7 +23,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
   1. Define a module and invoke the `notify_icon/2` macro.
       Optionally you can use `defalert/3` to create shortcuts for an alert you expect to use a lot:
     ```
-    defmodule MyApp.MyIcon do
+    defmodule MyIcon do
       import WinNotify
       @icon Path.expand("../path/to/icon.ico", __DIR__)
       
@@ -40,16 +40,18 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     def start(_type, _args) do      
       import Supervisor.Spec, warn: false
       children = [
-        worker(MyApp.MyIcon, []])
+        worker(MyIcon, []])
       ]
-      opts = [strategy: :one_for_one, name: MyApp.Supervisor]
+      opts = [strategy: :one_for_one, name: MyIcon.Supervisor]
       Supervisor.start_link(children, opts)
     end
     ```
       
-  3. Create balloop tip alerts:
+  3. Create balloop tip alerts or use alert shortcuts:
     ```
-    iex> MyApp.MyIcon.info("Info", "This is an info alert.")
-    iex> MyApp.MyIcon.warning("Warning", "This is a warning alert.")
-    iex> MyApp.MyIcon.error("Error", "This is an error alert.")
+    iex> MyIcon.info("Info", "This is an info alert.")
+    iex> MyIcon.warning("Warning", "This is a warning alert.")
+    iex> MyIcon.error("Error", "This is an error alert.")
+    iex> MyIcon.not_found(["Video"])
+    iex> MyIcon.welcome([user.name])
     ```
