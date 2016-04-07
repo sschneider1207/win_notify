@@ -20,14 +20,18 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Usage
 
-  1. Define a module and invoke the `notify_icon/2` macro:
+  1. Define a module and invoke the `notify_icon/2` macro.
+      Optionally you can use `defalert/3` to create shortcuts for an alert you expect to use a lot:
     ```
     defmodule MyApp.MyIcon do
       import WinNotify
-      @title "MyIcon"
       @icon Path.expand("../path/to/icon.ico", __DIR__)
       
-      notify_icon @title, @icon
+      notify_icon "My Icon", @icon do      
+        defalert :welcome, :info, "Welcome ~s!"
+        defalert :unexpected, :warning, "Expected value to be ~f, but got ~f"
+        defalert :not_found, :error, "~s not found"
+      end
     end
     ```
       

@@ -183,5 +183,4 @@ public class Icon : IDisposable
   public void Dispose() => NotifyIcon.Dispose();
 }
 
-var runner = new ExSharp.Runner();
-await runner.Run();
+Init(typeof(WinNotify));
